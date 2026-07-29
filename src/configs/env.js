@@ -9,6 +9,7 @@ const dbPassword = process.env.DB_PASSWORD;
 const dbName = process.env.DB_NAME;
 const jwtSecret = process.env.JWT_SECRET;
 const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '7d';
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3001';
 
 module.exports = {
   port,
@@ -19,4 +20,5 @@ module.exports = {
   dbName,
   jwtSecret,
   jwtExpiresIn,
+  frontendUrl,
 };
