@@ -8,13 +8,6 @@ const TAG = '[AUTH CONTROLLER]';
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: 'Please provide all required fields',
-    });
-  }
-
   const existing = await pool.query('SELECT id FROM users WHERE email = $1', [
     email,
   ]);
@@ -60,11 +53,10 @@ exports.login = async (req, res) => {
     });
   }
 
-  // Generate token
   const token = jwt.sign(
     { id: user.id, username: user.username, email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: '7d' },
+    jwtSecret,
+    { expiresIn: jwtExpiresIn },
   );
 
   logger.info(`${TAG} User logged in successfully with email: ${email}`);
@@ -73,12 +65,10 @@ exports.login = async (req, res) => {
     success: true,
     message: 'Login successful',
     token,
-
     data: {
       id: user.id,
       username: user.username,
       email: user.email,
     },
   });
-  console.log('JWT Secret:', token);
 };

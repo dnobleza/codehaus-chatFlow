@@ -35,9 +35,23 @@ exports.deleteMessage = async (req, res) => {
         'Message not found or you are not authorized to delete this message',
     });
   }
+
+  const deletedMessage = result.rows[0];
+
   logger.info(
     `${TAG} Message with id ${id} deleted successfully by user ${sender_id}`,
   );
+
+  // Notify the recipient in real time so an open conversation view can
+  // remove the message immediately instead of only on next reload.
+  const io = req.app.get('io');
+  if (io) {
+    io.to(`user_${deletedMessage.receiver_id}`).emit('message_deleted', {
+      id: deletedMessage.id,
+      receiver_id: deletedMessage.receiver_id,
+      sender_id: deletedMessage.sender_id,
+    });
+  }
 
   res.status(200).json({
     success: true,

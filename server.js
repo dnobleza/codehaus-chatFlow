@@ -14,6 +14,11 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
 registerSocketHandlers(io);
 
+// Make the socket.io instance available to REST controllers (e.g. so
+// deleteMessage can emit a real-time event to the recipient) via
+// req.app.get('io').
+app.set('io', io);
+
 const startServer = async () => {
   try {
     const client = await pool.connect();
