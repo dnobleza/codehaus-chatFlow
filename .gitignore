@@ -19,3 +19,7 @@ npm-debug.log*
 .vscode/
 .idea/
 *.swp
+
+# AI agent config, not part of the shipped app
+CLAUDE.md
+.claude/
