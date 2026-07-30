@@ -9,6 +9,13 @@ const pool = new Pool({
   user: dbUser,
   password: dbPassword,
   database: dbName,
+  // Render's managed Postgres (and most hosted providers) require SSL and
+  // present a certificate not signed by Node's default trusted CAs. Local
+  // Postgres (host = localhost/127.0.0.1) needs neither.
+  ssl:
+    dbHost && dbHost !== 'localhost' && dbHost !== '127.0.0.1'
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 module.exports = pool;
